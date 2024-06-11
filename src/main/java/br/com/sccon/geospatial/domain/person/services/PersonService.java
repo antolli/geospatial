@@ -4,6 +4,7 @@ import br.com.sccon.geospatial.controllers.person.controller.contracts.PersonReq
 import br.com.sccon.geospatial.controllers.person.controller.contracts.PersonResponse;
 import br.com.sccon.geospatial.domain.person.entities.Person;
 import br.com.sccon.geospatial.domain.person.mapper.PersonMapper;
+import br.com.sccon.geospatial.exceptions.PersonNullException;
 import br.com.sccon.geospatial.exceptions.Response4xxException;
 import br.com.sccon.geospatial.util.ConstantesUtil;
 import org.mapstruct.factory.Mappers;
@@ -12,23 +13,14 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 @Service
-public class PersonService {
+public class PersonService extends AbstractPersonService {
 
     private final PersonMapper mapper = Mappers.getMapper(PersonMapper.class);
     private static final Integer ZERO = 0;
-
-    private final Map<Integer, Person> personMap;
-
-    public PersonService() {
-        this.personMap = new HashMap<>();
-
-    }
 
     public List<PersonResponse> getAllPersonSortedByName() {
         List<Person> sortedList = new ArrayList<>(personMap.values());
@@ -36,31 +28,45 @@ public class PersonService {
         return mapper.mapListEntityToListResponse(sortedList);
     }
 
+    public PersonResponse getById(Integer id) {
+        super.verifyExistence(id);
+        Person person = personMap.get(id);
+        return mapper.mapEntityToResponse(person);
+    }
 
     public void removePerson(Integer id) {
-        if(this.personMap.containsKey(id)){
-            personMap.remove(id);
-        }
-        throw new Response4xxException(ConstantesUtil.NOT_FOUND, HttpStatus.NOT_FOUND);
+        super.verifyExistence(id);
+        personMap.remove(id);
     }
 
     public PersonResponse updatePerson(PersonRequest request, Integer id) {
-        if(!this.personMap.containsKey(id)){
-            throw new Response4xxException(ConstantesUtil.NOT_FOUND, HttpStatus.NOT_FOUND);
-        }
+        super.verifyExistence(id);
         Person person = mapper.mapRequestToEntity(request);
         personMap.put(id, person);
         return mapper.mapEntityToResponse(person);
 
     }
 
+    public PersonResponse updateNamePerson(Integer id, String newName) {
+        super.verifyExistence(id);
+        Person person = personMap.get(id);
+
+        if(Objects.isNull(person)){
+            throw new PersonNullException("A pessoa encontrada com ID " + id + "é nula.");
+        }
+        person.setNome(newName);
+        personMap.put(id, person);
+        return mapper.mapEntityToResponse(person);
+
+    }
+
     public PersonResponse create(final PersonRequest request){
-        if (Objects.nonNull(request.getId()) && this.personMap.containsKey(request.getId())) {
+        if (Objects.nonNull(request.getId()) && personMap.containsKey(request.getId())) {
             throw new Response4xxException(ConstantesUtil.ALREADY_EXISTS, HttpStatus.CONFLICT);
         }
 
         if (Objects.isNull(request.getId()) || ZERO.equals(request.getId())) {
-            int newId = this.personMap.keySet().stream().max(Integer::compare).orElse(ZERO) + 1;
+            int newId = personMap.keySet().stream().max(Integer::compare).orElse(ZERO) + 1;
             request.setId(newId);
         }
 

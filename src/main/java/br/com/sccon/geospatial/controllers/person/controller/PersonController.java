@@ -3,6 +3,7 @@ package br.com.sccon.geospatial.controllers.person.controller;
 import br.com.sccon.geospatial.controllers.person.controller.contracts.PersonRequest;
 import br.com.sccon.geospatial.controllers.person.controller.contracts.PersonResponse;
 import br.com.sccon.geospatial.domain.person.services.PersonService;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,7 +33,7 @@ public class PersonController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<PersonResponse>> read() {
+    public ResponseEntity<List<PersonResponse>> list() {
 
         List<PersonResponse> response = service.getAllPersonSortedByName();
 
@@ -43,16 +44,29 @@ public class PersonController {
         return new ResponseEntity(response, HttpStatus.OK);
     }
 
-    @PutMapping(value ="/{peopleId}")
-    public ResponseEntity<PersonResponse> update(@PathVariable Integer peopleId, @RequestBody PersonRequest request) {
-        PersonResponse response = this.service.updatePerson(request, peopleId);
+    @GetMapping(value ="/{personId}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<PersonResponse> getById(@PathVariable @NotNull(message = "O campo 'personId' é obrigatorio.") Integer personId) {
+
+        PersonResponse response = service.getById(personId);
+
+        return new ResponseEntity(response, HttpStatus.OK);
+    }
+    @PutMapping(value ="/{personId}")
+    public ResponseEntity<PersonResponse> update(@PathVariable @NotNull(message = "O campo 'personId' é obrigatorio.") Integer personId,
+                                                 @RequestBody @Valid PersonRequest request) {
+        PersonResponse response = this.service.updatePerson(request, personId);
+        return ResponseEntity.ok().body(response);
+    }
+    @PatchMapping(value ="/{personId}")
+    public ResponseEntity<PersonResponse> updateName(@PathVariable @NotNull(message = "O campo 'personId' é obrigatorio.") Integer personId,
+                                                     @RequestParam(required = false) String name) {
+        PersonResponse response = this.service.updateNamePerson(personId, name);
         return ResponseEntity.ok().body(response);
     }
 
-
-    @DeleteMapping(value = "/{peopleId}")
-    public ResponseEntity<Void> delete(@PathVariable Integer peopleId) {
-        this.service.removePerson(peopleId);
+    @DeleteMapping(value = "/{personId}")
+    public ResponseEntity<Void> delete(@PathVariable @NotNull(message = "O campo 'personId' é obrigatorio.") Integer personId) {
+        this.service.removePerson(personId);
         return ResponseEntity.noContent().build();
     }
 

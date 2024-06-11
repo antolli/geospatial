@@ -1,5 +1,0 @@
-br\com\sccon\geospatial\controllers\person\controller\contracts\PersonRequest.class
-br\com\sccon\geospatial\util\ConstantesUtil.class
-br\com\sccon\geospatial\controllers\person\controller\contracts\PersonResponse.class
-br\com\sccon\geospatial\domain\person\entities\Person.class
-br\com\sccon\geospatial\domain\person\mapper\PersonMapper.class

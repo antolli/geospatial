@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
 @Getter
 @Setter
@@ -15,7 +16,7 @@ import java.util.Date;
 public class PersonResponse {
 
     private String nome;
-    private Date dataNascimento;
-    private Date dataAdmissao;
+    private LocalDate dataNascimento;
+    private LocalDate dataAdmissao;
 
 }

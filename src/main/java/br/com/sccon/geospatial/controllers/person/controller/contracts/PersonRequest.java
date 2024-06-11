@@ -1,19 +1,19 @@
 package br.com.sccon.geospatial.controllers.person.controller.contracts;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
+@ToString
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class PersonRequest {
 

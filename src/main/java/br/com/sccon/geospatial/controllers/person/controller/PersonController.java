@@ -59,7 +59,7 @@ public class PersonController {
     }
     @PatchMapping(value ="/{personId}")
     public ResponseEntity<PersonResponse> updateName(@PathVariable @NotNull(message = "O campo 'personId' é obrigatorio.") Integer personId,
-                                                     @RequestParam(required = false) String name) {
+                                                     @RequestParam @NotNull(message = "O campo 'name' é obrigatorio.") String name) {
         PersonResponse response = this.service.updateNamePerson(personId, name);
         return ResponseEntity.ok().body(response);
     }

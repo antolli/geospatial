@@ -28,20 +28,20 @@ public class PersonService extends AbstractPersonService {
         return mapper.mapListEntityToListResponse(sortedList);
     }
 
-    public PersonResponse getById(Integer id) {
+    public PersonResponse getById(final Integer id) {
         super.verifyExistence(id);
-        Person person = personMap.get(id);
+        final Person person = personMap.get(id);
         return mapper.mapEntityToResponse(person);
     }
 
-    public void removePerson(Integer id) {
+    public void removePerson(final Integer id) {
         super.verifyExistence(id);
         personMap.remove(id);
     }
 
-    public PersonResponse updatePerson(PersonRequest request, Integer id) {
+    public PersonResponse updatePerson(final PersonRequest request, final Integer id) {
         super.verifyExistence(id);
-        Person person = mapper.mapRequestToEntity(request);
+        final Person person = mapper.mapRequestToEntity(request);
         personMap.put(id, person);
         return mapper.mapEntityToResponse(person);
 
@@ -49,7 +49,7 @@ public class PersonService extends AbstractPersonService {
 
     public PersonResponse updateNamePerson(Integer id, String newName) {
         super.verifyExistence(id);
-        Person person = personMap.get(id);
+        final Person person = personMap.get(id);
 
         if(Objects.isNull(person)){
             throw new PersonNullException("A pessoa encontrada com ID " + id + "é nula.");
@@ -66,17 +66,17 @@ public class PersonService extends AbstractPersonService {
         }
 
         if (Objects.isNull(request.getId()) || ZERO.equals(request.getId())) {
-            int newId = personMap.keySet().stream().max(Integer::compare).orElse(ZERO) + 1;
+            final int newId = personMap.keySet().stream().max(Integer::compare).orElse(ZERO) + 1;
             request.setId(newId);
         }
 
-        Person person = addPerson(request);
+        final Person person = addPerson(request);
 
         return mapper.mapEntityToResponse(person);
 
     }
-    public Person addPerson(PersonRequest request) {
-        Person person = mapper.mapRequestToEntity(request);
+    public Person addPerson(final PersonRequest request) {
+        final Person person = mapper.mapRequestToEntity(request);
         personMap.put(person.getId(), person);
         return person;
     }

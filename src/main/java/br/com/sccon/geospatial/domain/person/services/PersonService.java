@@ -5,22 +5,23 @@ import br.com.sccon.geospatial.controllers.person.controller.contracts.PersonRes
 import br.com.sccon.geospatial.domain.person.entities.Person;
 import br.com.sccon.geospatial.domain.person.mapper.PersonMapper;
 import br.com.sccon.geospatial.exceptions.PersonNullException;
-import br.com.sccon.geospatial.exceptions.Response4xxException;
 import br.com.sccon.geospatial.util.ConstantesUtil;
 import org.mapstruct.factory.Mappers;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 public class PersonService extends AbstractPersonService {
 
     private final PersonMapper mapper = Mappers.getMapper(PersonMapper.class);
     private static final Integer ZERO = 0;
+
+    public PersonService(Map<Integer, Person> personMap) {
+        super(personMap);
+    }
 
     public List<PersonResponse> getAllPersonSortedByName() {
         List<Person> sortedList = new ArrayList<>(personMap.values());
@@ -62,7 +63,8 @@ public class PersonService extends AbstractPersonService {
 
     public PersonResponse create(final PersonRequest request){
         if (Objects.nonNull(request.getId()) && personMap.containsKey(request.getId())) {
-            throw new Response4xxException(ConstantesUtil.ALREADY_EXISTS, HttpStatus.CONFLICT);
+            throw new ResponseStatusException(HttpStatus.CONFLICT, ConstantesUtil.ALREADY_EXISTS);
+
         }
 
         if (Objects.isNull(request.getId()) || ZERO.equals(request.getId())) {

@@ -2,12 +2,13 @@ package br.com.sccon.geospatial.domain.person.services;
 
 import br.com.sccon.geospatial.enums.OutputSalaryEnum;
 import br.com.sccon.geospatial.domain.person.entities.Person;
-import br.com.sccon.geospatial.exceptions.Response4xxException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Map;
 import java.util.stream.IntStream;
 
 @Service
@@ -16,9 +17,14 @@ public class PersonSalaryService extends AbstractPersonService{
     private static final double PERCENTUAL_INCREMENTO = 0.18;
     private static final double INCREMENTO_ANUAL = 500.00;
     private static final double SALARIO_MINIMO = 1302.00;
+
+    public PersonSalaryService(Map<Integer, Person> personMap) {
+        super(personMap);
+    }
+
     public Double calcularSalario(final Integer id, final String output){
         if(!OutputSalaryEnum.fromValue(output)){
-            throw new Response4xxException("Formato de output invalido: "+ output, HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Formato de output invalido: "+ output);
         }
         super.verifyExistence(id);
 

@@ -1,7 +1,6 @@
 package br.com.sccon.geospatial.controllers.person.controller;
 
 import br.com.sccon.geospatial.domain.person.services.PersonAgeService;
-import br.com.sccon.geospatial.domain.person.services.PersonService;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

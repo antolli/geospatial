@@ -18,5 +18,4 @@ public class PersonResponse {
     private Date dataNascimento;
     private Date dataAdmissao;
 
-
 }

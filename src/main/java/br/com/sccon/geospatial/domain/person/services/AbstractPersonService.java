@@ -1,23 +1,24 @@
 package br.com.sccon.geospatial.domain.person.services;
 
 import br.com.sccon.geospatial.domain.person.entities.Person;
-import br.com.sccon.geospatial.exceptions.Response4xxException;
 import br.com.sccon.geospatial.util.ConstantesUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class AbstractPersonService {
     public Map<Integer, Person> personMap;
 
-    public AbstractPersonService() {
-        this.personMap = new ConcurrentHashMap<>();
+    @Autowired
+    public AbstractPersonService(Map<Integer, Person> personMap) {
+        this.personMap = personMap;
     }
 
     public void verifyExistence(Integer id){
         if(!personMap.containsKey(id)){
-            throw new Response4xxException(ConstantesUtil.NOT_FOUND, HttpStatus.NOT_FOUND);
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, ConstantesUtil.NOT_FOUND);
         }
     }
 }

@@ -2,20 +2,25 @@ package br.com.sccon.geospatial.domain.person.services;
 
 import br.com.sccon.geospatial.domain.person.entities.Person;
 import br.com.sccon.geospatial.enums.OutputAgeEnum;
-import br.com.sccon.geospatial.exceptions.Response4xxException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
+import java.util.Map;
 
 @Service
 public class PersonAgeService extends AbstractPersonService{
 
+    public PersonAgeService(Map<Integer, Person> personMap) {
+        super(personMap);
+    }
+
     public String calculatePersonAge(final Integer id, String output){
         if(!OutputAgeEnum.fromValue(output)){
-            throw new Response4xxException("Formato de output invalido: "+ output, HttpStatus.BAD_REQUEST);
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Formato de output invalido: "+ output);
         }
         super.verifyExistence(id);
         final Person person = personMap.get(id);
